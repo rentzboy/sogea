@@ -3,16 +3,22 @@
 #endif // GLOBALS_H
 
 #include <QtWidgets>
+#include "dbconnectionform.h"
+
 
 /* GLOBAL VARIABLES */
-extern QErrorMessage globlalErrorMsg;
+extern QErrorMessage globlalErrorMsg; //NO utilizado
 
 /* DEFINES */
-#define CATCHEXCEPTION                    excepciones catchedException (e, __FILE__, __FUNCTION__,  __LINE__); \
-                                                                     catchedException.saveToLogFile();
-#define THROWEXCEPCION(msg)         excepciones throwedException (__FILE__, __FUNCTION__,  __LINE__, #msg); \
-                                                                     throw throwedException;
+#define EXCEPTION_HANDLER                             excepciones ex(e, __FILE__, __FUNCTION__,  __LINE__);
+/*Deprecated
+#define CATCH_STD_EXCEPTION        excepciones catchedException (e, __FILE__, __FUNCTION__,  __LINE__); \
 
+#define THROW_EXCEPCION(msg)       excepciones throwedException (__FILE__, __FUNCTION__,  __LINE__, #msg); \
+                                                                     throw throwedException; //continuación de la linea anterior
+                                                                     */
+
+#define STATUSBAR_MESSAGE(msg, timeout)     static_cast<mainWindow*>(this->parent())->statusBar()->showMessage(QObject::tr(msg), timeout);
 
 
 

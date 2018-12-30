@@ -2,8 +2,7 @@
 #define DBCONNECTIONFORM_H
 
 #include <QtWidgets>
-#include "dbconnector.h"
-#include <memory>
+class dbConnector;
 
 class dbConnectionForm : public QDialog
 {
@@ -18,16 +17,16 @@ public:
     dbConnectionForm(const dbConnectionForm&) = delete; //delete: borra las definiciones automáticas del compilador
     dbConnectionForm& operator =(const dbConnectionForm&) = delete; //también se podrian haber declarado private
 
-    QString getTypeComboActivated(void);
-    QString getDatabaseFieldText(void);
-    QString getUsernameFieldText(void);
-    QString getPasswordFieldText(void);
-    QString getServerFieldText(void);
+    QString getTypeComboActivated (void) const;
+    QString getDatabaseFieldText(void) const;
+    QString getUsernameFieldText(void) const;
+    QString getPasswordFieldText(void) const;
+    QString getServerFieldText(void) const;
+    //dbConnector *getMiConexion() const;
     void closeDatabaseDialog(void);
 
 public slots:
-    bool connectToDatabase(void);
-    void closeDatabase(void);
+    bool createNewDbConnection(void);
     void accept(void) override;
     void reject(void) override;
 
@@ -42,14 +41,15 @@ private:
     QPushButton *aceptarButton = Q_NULLPTR;
     QPushButton *cancelarButton = Q_NULLPTR;
     QComboBox *typeComboBox = Q_NULLPTR;
+    QStringList *comboList = Q_NULLPTR;
     QLineEdit *databaseLineEdit = Q_NULLPTR;
     QLineEdit *usernameLineEdit = Q_NULLPTR;
     QLineEdit *passwordLineEdit = Q_NULLPTR;
     QLineEdit *serverLineEdit = Q_NULLPTR;
-    QStringList *comboList = Q_NULLPTR;
-    dbConnector *miConexion = Q_NULLPTR;
-    QDialog *closeDbDialog = Q_NULLPTR;
     QErrorMessage *errorMsgdbConnectionForm = Q_NULLPTR;
+    static const int MAXDBCONNECTIONS = 10;
+    static std::size_t connectionId;
+    std::array<dbConnector*, MAXDBCONNECTIONS> dbConnection = {};
 };
 
 #endif // DBCONNECTIONFORM_H

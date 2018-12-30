@@ -1,0 +1,10 @@
+Time: sáb. dic. 29 04:12:06 2018
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/dbconnector.cpp
+Function name: setUpConnectionToDatabase
+Line: 47
+Error Description: Driver not loaded
+
+

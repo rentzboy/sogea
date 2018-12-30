@@ -6,7 +6,6 @@
 #include <QtSql>
 #include <QSqlError>
 
-// ESTE CONECTOR ES UNA MIERDA Y NO SIRVE. SE HACE TODO EN FILE dbConnector
 class dbConnector : public QSqlDatabase
 {
 public:
@@ -26,7 +25,7 @@ private:
     QString dbPassword;
     QString dbHost;
     QSqlDatabase db;
-    QErrorMessage errorMsgdbconnector;
+    QErrorMessage errorMsgDbconnector;
 };
 
 #endif // dbConnector_H

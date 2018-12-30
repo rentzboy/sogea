@@ -5,24 +5,27 @@
 #include <QDateTime>
 #include <QSysInfo>
 #include <exception>
+#include <QSqlError>
 
 /* IMPORTANTE: Diseñamos esta clase pues no se pueden generar members de la clase base exceptions
  * ya que esta clase úncamente tiene el member what() */
 
-class excepciones : public std::exception
+class excepciones
 {
 public:
     excepciones(const std::exception&, const QString&, const QString&, int); //ctror #1
-    excepciones(const QString&, const QString&, int, const QString&); //ctror #2 (no cambiar el orden x la macro)
-    ~excepciones() = default;
+    excepciones(const QSqlError&, const QString&, const QString&, int);  //ctror #2
+    excepciones(const QString&, const QString&, const QString&, int); //ctror #3
+    ~excepciones() = default;  //ctror #4
     excepciones(const excepciones& e) = default; //throw expression: copy-initialize the expression !!
     excepciones& operator =(const excepciones&) = delete;
 
-    void saveToLogFile(void);
-    void saveToLogTable(void);
-
 private:
-     //Attributes
+    //members
+    void saveExceptionInterface(void);
+    bool saveToLogTable(void);
+    void saveToLogFile(QString method); //Using Qt or STL
+    //Attributes
     QStringList logExceptions;
     QString hostName = Q_NULLPTR;
     QString operativeSystem = Q_NULLPTR;

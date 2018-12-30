@@ -33,7 +33,7 @@ SOURCES += \
     dbconnectionform.cpp \
     dbconnector.cpp \
     centralwidget.cpp \
-    excepciones.cpp \
+    excepciones.cpp
 
 HEADERS += \
     mainwindow.h \

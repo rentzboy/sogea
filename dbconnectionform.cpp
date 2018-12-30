@@ -1,15 +1,20 @@
 #include "dbconnectionform.h"
+#include "globals.h"
+#include "dbconnector.h"
+#include <memory>
 
 /* CONSTRUCTOR */
 dbConnectionForm::dbConnectionForm(QWidget *parent, Qt::WindowFlags flag) : QDialog(parent, flag)
 {
+    qDebug() << "Se ha llamado al constructor de dbConnectionForm";
+
     errorMsgdbConnectionForm = new QErrorMessage(this);
     //Qt automatically calls sizeHint() @ the constructor for each Widget
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred); //horizontal & vertical
     this->setWindowTitle(QObject::tr("DB connector"));
 
     //Botones y campos del widget -hay que crearlos antes del setLayout()
-    comboList = new QStringList; //RAII managed by Qt container
+    comboList = new QStringList; //RAII managed by Qt container QList<QString>
     comboList->append("QPSQL");
     comboList->append("QMYSQL");
     comboList->append("QSQLlite");
@@ -37,29 +42,77 @@ dbConnectionForm::dbConnectionForm(QWidget *parent, Qt::WindowFlags flag) : QDia
     connect(cancelarButton, &QPushButton::clicked, this, &dbConnectionForm::reject);
 }
 
-/* SLOTS */
-void dbConnectionForm::accept(void)
+/* PUBLIC SLOTS MEMBERS */
+void dbConnectionForm::accept(void) //override
 {
     qDebug() << "Se ha hecho click en el botón Aceptar.";
-
     if(!this->checkFieldsNotEmpty())
     {
-         //Funcionalidad extra
-        if (!this->connectToDatabase())
-        {
-            //Hay que implementar la funcionalidad del slot accept() original
-            this->done(QDialog::Accepted);
-            this->hide();
-        }
+        if (!this->createNewDbConnection()) //Funcionalidad extra
+            this->done(QDialog::Accepted); //Funcionalidad del slot accept() original
     }
 }
-void dbConnectionForm::reject(void)
+void dbConnectionForm::reject(void) //override
 {
     qDebug() << "Se ha hecho click en el botón Cancelar.";
-    //Hay que implementar la funcionalidad del slot reject() original
-    this->hide();
-    this->done(QDialog::Rejected);
+    this->done(QDialog::Rejected); //Funcionalidad del slot reject() original
 }
+/* PUBLIC MEMBERS */
+bool dbConnectionForm::createNewDbConnection(void)
+{
+    if(connectionId>MAXDBCONNECTIONS-1)
+    {
+        errorMsgdbConnectionForm->showMessage(QObject::tr("Se ha alcanzado el máximo de conexiones!"));
+        return EXIT_FAILURE;
+    }
+
+    qDebug() << "Inicio proceso de conexión con la db";
+
+    comboList = new QStringList;  //RAII managed by Qt container QList<QString>
+    comboList->append(typeComboBox->currentText());  //[0]
+    comboList->append(databaseLineEdit->text());           //[1]
+    comboList->append(usernameLineEdit->text());         //[2]
+    comboList->append(passwordLineEdit->text());         //[3]
+    comboList->append(serverLineEdit->text());              //[4]
+
+    //Connect to database using dbconnector
+    dbConnection[connectionId] = new dbConnector; //dumbDB (global), no hay que deletearlo hasta cerrar la conexión con la db
+    if(!dbConnection[connectionId]->setUpConnectionToDatabase(*comboList))
+    {
+        connectionId++;
+        qDebug() << QObject::tr("Conexiones abiertas con bases de datos: ") << connectionId;
+        return EXIT_SUCCESS;
+    }
+    else return EXIT_FAILURE;
+}
+void dbConnectionForm::closeDatabaseDialog(void) //SIN TERMINAR -NO VA AQUI !!
+{
+    //Pop-up to close db connection
+    QMessageBox msgBoxCloseDb;
+    msgBoxCloseDb.setWindowTitle(QObject::tr("Shut down db connection"));
+    msgBoxCloseDb.setText(QObject::tr("Confirma que quier cerrar la conexión con la database ?"));
+    msgBoxCloseDb.setWindowModality(Qt::NonModal);
+    msgBoxCloseDb.setStandardButtons(QMessageBox::Ok);
+    msgBoxCloseDb.setStandardButtons(QMessageBox::Cancel);
+    int boton = msgBoxCloseDb.exec();
+    switch (boton) {
+        case QMessageBox::Ok: //eliminar la conexion con la dabase actual
+        errorMsgdbConnectionForm->showMessage(QObject::tr("Se ha cerrado la conexión con la Db"));
+        break;
+    case QMessageBox::Cancel:
+        break;
+    }
+}
+QString dbConnectionForm::getTypeComboActivated(void) const
+{return typeComboBox->currentText();}
+QString dbConnectionForm::getDatabaseFieldText(void) const
+{return databaseLineEdit->text();}
+QString dbConnectionForm::getUsernameFieldText(void) const
+{return usernameLineEdit->text();}
+QString dbConnectionForm::getPasswordFieldText(void) const
+{return passwordLineEdit->text();}
+QString dbConnectionForm::getServerFieldText(void) const
+{return serverLineEdit->text();}
 
 /* PRIVATE MEMBERS */
 QSize dbConnectionForm::sizeHint() const
@@ -77,88 +130,7 @@ bool dbConnectionForm::checkFieldsNotEmpty(void)
         QMessageBox::warning(this, QObject::tr("Hay campos vacios"),
                                                         QObject::tr("Por favor revise los campos!"),
                                                         QMessageBox::Ok);
-        return EXIT_FAILURE; //[1]
+        return EXIT_FAILURE;
     }
-    return EXIT_SUCCESS;  //[0]
+    return EXIT_SUCCESS;
 }
-
-/* PUBLIC MEMBERS */
-bool dbConnectionForm::connectToDatabase(void)
-{
-    qDebug() << "Inicio proceso de conexión con la db";
-
-    comboList = new QStringList;  //RAII managed by Qt container
-    comboList->append(typeComboBox->currentText());  //[0]
-    comboList->append(databaseLineEdit->text());           //[1]
-    comboList->append(usernameLineEdit->text());         //[2]
-    comboList->append(passwordLineEdit->text());         //[3]
-    comboList->append(serverLineEdit->text());              //[4]
-
-    // OPCION #1: Connect to database using dbconnector
-    miConexion = new dbConnector; //dumbDB, no hay que deletearlo hasta que se cierra la conexión con la db
-    return miConexion->setUpConnectionToDatabase(*comboList);
-
-    /* OPCION #2 DEPRECATED: Connect to database
-    //Checking installed db plugins
-    QStringList installedDrivers = QSqlDatabase::drivers();
-     qDebug() << "Drivers instalados: " << installedDrivers;
-    if(!installedDrivers.contains(comboList->value(0)))
-    {
-        QMessageBox::warning(this, QObject::tr("Driver no instalado"),
-                                                        QObject::tr("No se ha encontrado el driver para conectar a la database.\n"),
-                                                        QMessageBox::Ok);
-        qDebug() << "No se ha encontrado el driver para conectar a la database";
-    }
-
-    auto miConexion = std::unique_ptr <QSqlDatabase>(new QSqlDatabase);
-    auto *miConexion = new QSqlDatabase;
-    *miConexion = QSqlDatabase::addDatabase(comboList->value(0)); //static function
-    miConexion->setDatabaseName(comboList->value(1));
-    miConexion->setUserName(comboList->value(2));
-    miConexion->setPassword(comboList->value(3));
-    miConexion->setHostName(comboList->value(4));
-    if(miConexion->open())
-    {
-        qDebug() << "DB opened successfully";
-        qDebug() << miConexion->lastError();
-        //Popup to close db connection
-        dbConnectionForm::closeDatabaseDialog();
-        return miConexion->lastError();
-    }
-    else
-    {
-        QMessageBox::warning(this,
-                                                QObject::tr("No se ha conectado a la db"),
-                                                QObject::tr("No se ha podido conectar a la database.\n"),
-                                                QMessageBox::Ok);
-        qDebug() << "DB fail";
-        qDebug() << miConexion->lastError();
-        return miConexion->lastError();
-    }*/
-}
-void dbConnectionForm::closeDatabase(void)
-{
-    miConexion->close();
-}
-void dbConnectionForm::closeDatabaseDialog(void)
-{
-    //Pop-up to close db connection
-    QMessageBox msgBoxCloseDb;
-    msgBoxCloseDb.setWindowTitle(QObject::tr("Shut down db connection"));
-    msgBoxCloseDb.setText(QObject::tr("Cerrar la conexión con la database"));
-    msgBoxCloseDb.setWindowModality(Qt::NonModal);
-    msgBoxCloseDb.setStandardButtons(QMessageBox::Ok);
-    msgBoxCloseDb.exec();
-    if(msgBoxCloseDb.result() == QMessageBox::Ok)
-        dbConnectionForm::closeDatabase();
-}
-QString dbConnectionForm::getTypeComboActivated(void)
-{return typeComboBox->currentText();}
-QString dbConnectionForm::getDatabaseFieldText(void)
-{return databaseLineEdit->text();}
-QString dbConnectionForm::getUsernameFieldText(void)
-{return usernameLineEdit->text();}
-QString dbConnectionForm::getPasswordFieldText(void)
-{return passwordLineEdit->text();}
-QString dbConnectionForm::getServerFieldText(void)
-{return serverLineEdit->text();}

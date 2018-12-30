@@ -6,25 +6,25 @@
 #include <typeinfo>
 #include  <exception>
 
+//Static variables initialization
+std::size_t dbConnectionForm::connectionId=0;
+
 int main(int argc, char *argv[])
 {  
     try
     {
         QApplication a(argc, argv);
-        mainWindow mainWindow;
-        dbConnectionForm dbConnectorWindow;
-
-        mainWindow.show();
-        dbConnectorWindow.show();
+        mainWindow mainWidget;
+        mainWidget.show();
 
         return QApplication::exec();
     }
-    catch (excepciones &e)
-    {
-        e.saveToLogFile();
-    }
     catch (std::exception &e)
     {
-        CATCHEXCEPTION
+        EXCEPTION_HANDLER
+    }
+    catch (QString &e)
+    {
+        EXCEPTION_HANDLER
     }
 }

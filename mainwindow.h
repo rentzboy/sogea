@@ -2,7 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QtWidgets>
-#include "centralwidget.h"
+class centralWidget; //FORWARD DECLARATION
+class dbConnectionForm;
 
 class mainWindow : public QMainWindow
 {
@@ -16,9 +17,13 @@ public:
 
 public slots:
 //    void newFile(void);
-    void openFile(void);
-    void closeFile(void);
-    void saveFile(void);
+    void openAction(void);
+    void closeAction(void);
+    void saveAction(void);
+    void dbConnectionAction(void);
+    void closeEvent(QCloseEvent *event) override;
+    void previousPageAction(void);
+    void nextpageAction(void);
 //    bool saveFile(const QString &fileName);
 //    bool saveAsFile(void);
 //    void exitApp(void);
@@ -32,7 +37,6 @@ private:
     //Members
     QSize sizeHint(void) const override;
     QSize minimumSizeHint(void) const override;
-    void closeEvent(QCloseEvent *event) override;
     QSizePolicy sizePolicy(void) const;
     void setUpWindows(void);
     void createMenus(void);
@@ -40,8 +44,10 @@ private:
     void userScreenResolution(void);
     QSettings::Status readUserSettings(void);
     QSettings::Status writeUserSettings(void);
-    //Settings
-    QSettings *userSettings = Q_NULLPTR;
+    void newPage(QWidget *widget);
+    void previousPage(void);
+    void nextPage(void);
+
     //Menu bar & Menus
     QMenuBar *mainBar = Q_NULLPTR;
     QMenu *fileMenu = Q_NULLPTR;
@@ -50,16 +56,11 @@ private:
     //ToolBar & Buttons
     QToolBar *standardToolBar = Q_NULLPTR;
     QToolBar *editToolBar = Q_NULLPTR;
-    QToolButton *buttonOpen = Q_NULLPTR;
-    QToolButton *buttonClose = Q_NULLPTR;
-    QToolButton *buttonSave = Q_NULLPTR;
-    QToolButton *buttonCopy = Q_NULLPTR;
-    QToolButton *buttonCut = Q_NULLPTR;
-    QToolButton *buttonPaste = Q_NULLPTR;
-    //Dock Widgets
     //Central widget
-    class centralWidget *mainWindowCentralWidget = Q_NULLPTR;
+    QList<QWidget*> breadCrumbling;
+    uint16_t breadCrumblingIndex = 0;
     //Others
+    QErrorMessage *errorMsgMainwindow = Q_NULLPTR;
     typedef struct
     {
         QRect geometry;
