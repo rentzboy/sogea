@@ -5,9 +5,7 @@
 #include <QtWidgets>
 #include "dbconnectionform.h"
 
-
 /* GLOBAL VARIABLES */
-extern QErrorMessage globlalErrorMsg; //NO utilizado
 
 /* DEFINES */
 #define EXCEPTION_HANDLER                             excepciones ex(e, __FILE__, __FUNCTION__,  __LINE__);

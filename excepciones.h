@@ -34,7 +34,7 @@ private:
     QString functionName = Q_NULLPTR;
     QString errorDescription = Q_NULLPTR;
     int fileLine;
-    int userID ;
+    int userName ;
 };
 
 #endif // EXCEPCIONES_H

@@ -9,6 +9,7 @@ class QTreeWidget;
 class centralWidget : public QWidget
 {
     Q_OBJECT
+
 public:
     explicit centralWidget(QWidget *parent = Q_NULLPTR);
     ~centralWidget() = default;
@@ -31,7 +32,7 @@ public slots:
     void show_metaData(void);
 
 protected:
-        void contextMenuEvent(QContextMenuEvent *event);
+    void contextMenuEvent(QContextMenuEvent *event);
 private:
     //private members
     void setUpLayout(void);
@@ -50,14 +51,12 @@ private:
     QTableView *table = Q_NULLPTR;
     QItemSelectionModel *selection = Q_NULLPTR;
 
-    QSqlDatabase* db = Q_NULLPTR;
+    QSqlDatabase db;
     QString selectedTable;
     QPlainTextEdit *textField = Q_NULLPTR;
     QPushButton *aceptarButton = Q_NULLPTR;
     QPushButton *cancelarButton = Q_NULLPTR;
     QErrorMessage *errorMsgCentralwidget = Q_NULLPTR;
-    static const auto MAX_CONNECTIONS = 10;
-    std::array<QString, MAX_CONNECTIONS>  connectionName;
 };
 
 #endif // CENTRALWIDGET_H

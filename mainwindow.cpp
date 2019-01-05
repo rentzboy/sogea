@@ -1,52 +1,75 @@
 #include "mainwindow.h"
 #include "dbconnectionform.h"
 #include "centralwidget.h"
+#include "globals.h"
+#include "excepciones.h"
 
 /* CONSTRUCTOR */
 mainWindow::mainWindow(QWidget *parent) : QMainWindow(parent)
 {
-    errorMsgMainwindow = new QErrorMessage(this);
     //Retrieve persistent data from last user's sesion
     if(this->readUserSettings())
     {
         qDebug() << "Ha habido un problema al leer el archivo de la última sesión!";
         //Get user's screen resolution
-        this->userScreenResolution();
+        this->getScreenResolution();
 
-        //this->sizeHint(); //Debería llamarse automáticamente desde el constructor pero no entiendo cuando se aplica
-        this->resize(resolutionWidth, resolutionHeight); //este si que no falla nunca
-        this->sizePolicy(); //No parece que funcione.............
-        //Al utilizar setGeometry se deja de llamar a sizeHint() automáticamente desde el constructor!
+        //OPCION #1: Ni sizeHint() ni sizePolicy() hacen nada .....
+        this->sizeHint(); //Se llama automáticamente desde el ctror pero ni llamandolo directamente funciona....
+        this->sizePolicy(); //managed by the QLayout of this widget's children (no se llama automat. desde el ctror)
+        //OPCION #2:
+        this->resize(resolutionWidth, resolutionHeight); //este si que no falla
+        //OPCION #3:
         //this->setGeometry(0,0, resolutionWidth, resolutionHeight);
+        //Al utilizar setGeometry se deja de llamar a sizeHint() automáticamente desde el constructor!
     }
 
     //Set up Window (+ configuraciones)
-    this->setUpWindows();
+    this->setUpWindow();
 
+    errorMsgMainwindow = new QErrorMessage(this);
     statusBar()->showMessage(QObject::tr("Ready"), 1500);
 }
 
 /* PRIVATE MEMBERS */
-void mainWindow::userScreenResolution()
+QSize mainWindow::sizeHint(void) const //override
+{
+    //Devuelve el tamaño "recomendado" del widget (Se llama automáticamente desde el constructor)
+    //También lo utiliza sizePolicy()
+    qDebug() << "Se ha llamado a sizeHint()";
+    qDebug() << "Resolution.width = " << resolutionWidth << "Resolution.height = " << resolutionHeight;
+    return {resolutionWidth, resolutionHeight};
+}
+QSizePolicy mainWindow::sizePolicy(void) const //override
+{
+    //Devuelve el resize policy del widget (NO se llama automáticamente desde el constructor)
+    qDebug() << "Se ha llamado a sizePolicy()";
+    return {QSizePolicy::Fixed, QSizePolicy::Fixed};
+}
+QSize mainWindow::minimumSizeHint(void) const //override
+{
+    //No impora pues los widgets que importan están en centralwidget
+    //por lo que el minimumSizeHint se define allí
+    qDebug() << "Se ha llamado a minimumSizeHint()";
+    return {resolutionWidth/2, resolutionHeight/2};
+}
+void mainWindow::getScreenResolution(void)
 {
     //Retrieve parameters from user's screen configuration
-    QSharedPointer <userScreen> userScreenData = QSharedPointer<userScreen>(new userScreen);
     QDesktopWidget *rootWindow = QApplication::desktop();
-    userScreenData->count = rootWindow->screenCount();
-    userScreenData->virtualDesktop = rootWindow->isVirtualDesktop();
-    userScreenData->geometry = rootWindow->availableGeometry(-1);
-    qDebug() << userScreenData->geometry << ";" << userScreenData->count << ";" <<  userScreenData->virtualDesktop;
-    resolutionWidth =userScreenData->geometry.width();
-    resolutionHeight =userScreenData->geometry.height();
-    qDebug() << "RESOLUTION => WIDTH: " << resolutionWidth << " - HEIGHT: " << resolutionHeight;
+    if(rootWindow->screenCount() == 1 && rootWindow->isVirtualDesktop() == false)
+    {
+        resolutionWidth =rootWindow->availableGeometry(-1).width();
+        resolutionHeight =rootWindow->availableGeometry(-1).height();
+    }
 }
-void mainWindow::setUpWindows()
+void mainWindow::setUpWindow(void)
 {
     //Menus & Toolbars
     this->createMenus();
     this->createToolsBars();
 }
-void mainWindow::createMenus()
+void mainWindow::createMenus(void)
 {
     //Create window's main bar
     mainBar = new QMenuBar(this);
@@ -74,7 +97,7 @@ void mainWindow::createMenus()
 
     qDebug() << "Se han creado los Menus correctamente!";
 }
-void mainWindow::createToolsBars()
+void mainWindow::createToolsBars(void)
 {
     standardToolBar = new QToolBar(this);
     editToolBar = new QToolBar(this);
@@ -106,28 +129,7 @@ void mainWindow::createToolsBars()
     addToolBar(Qt::TopToolBarArea, editToolBar);
     //addToolBarBreak(Qt::TopToolBarArea); //crea un nuevo espacio horizontal por debajo para otras toolbars
 }
-QSize mainWindow::sizeHint() const
-{
-    //Devuelve el tamaño del widget (Se llama automáticamente desde el constructor)
-    //También lo utiliza sizePolicy()
-    qDebug() << "Se ha llamado a sizeHint()";
-    qDebug() << "SIZEHINT => width: "<< resolutionWidth << " - height: " << resolutionHeight;
-    return {resolutionWidth, resolutionHeight};
-}
-QSize mainWindow::minimumSizeHint() const
-{
-    //No impora pues los widgets que importan están en centralwidget
-    //por lo que el minimumSizeHint se define allí
-    qDebug() << "Se ha llamado a minimumSizeHint()";
-    return {resolutionWidth/2, resolutionHeight/2};
-}
-QSizePolicy mainWindow::sizePolicy() const
-{
-    //Devuelve el resize policy del widget (NO se llama automáticamente desde el constructor)
-    qDebug() << "Se ha llamado a sizePolicy()";
-    return {QSizePolicy::Fixed, QSizePolicy::Fixed};
-}
-QSettings::Status mainWindow::readUserSettings()
+QSettings::Status mainWindow::readUserSettings(void)
 {
     //Retrieve configuration from the last user's session
     QSettings userSettings(QObject::tr("Fx Team®"), QObject::tr("Sogea"));
@@ -138,7 +140,7 @@ QSettings::Status mainWindow::readUserSettings()
     userSettings.endGroup();
     return userSettings.status();
 }
-QSettings::Status mainWindow::writeUserSettings()
+QSettings::Status mainWindow::writeUserSettings(void)
 {
     //Store configuration before closing the application
     QSettings userSettings(QObject::tr("Fx Team®"), QObject::tr("Sogea"));
@@ -176,7 +178,6 @@ void mainWindow::closeEvent(QCloseEvent *event) //ACTIVAR CODE EN PRODUCCIÓN
 //            event->ignore();
 //     }
 }
-
 void mainWindow:: newPage(QWidget *widget) //NO PROBADO
 {
     if(breadCrumblingIndex == breadCrumbling.count())
@@ -201,33 +202,18 @@ void mainWindow:: nextPage(void) //NO PROBADO
 }
 
 /* PUBLIC SLOT MEMBERS */
-void mainWindow::openAction() //PENDING
+void mainWindow::openAction(void) const//PENDING
 {
-    QMessageBox::warning(this, QObject::tr("ABRIR ARCHIVO"),
-                                                    QObject::tr("ABRIRRRRRRRRR!"),
-                                                    QMessageBox::Ok);
+    errorMsgMainwindow->showMessage("Pendiente codificar");
 
 }
-void mainWindow::closeAction()
+void mainWindow::closeAction(void)
 {
     this->close(); //send a QCloseEvent
 }
-void mainWindow::saveAction() //PENDING
+void mainWindow::saveAction(void) const //PENDING
 {
-    QMessageBox::warning(this, QObject::tr("ABRIR ARCHIVO"),
-                                                    QObject::tr("ABRIRRRRRRRRR!"),
-                                                    QMessageBox::Ok);
-
-}
-void mainWindow::dbConnectionAction(void)
-{
-    auto *dbConnectorWidget = new dbConnectionForm(this);
-    if(dbConnectorWidget->exec() == QDialog::Accepted)
-    {
-        auto *mainCentralWidget = new class centralWidget(this);
-        this->newPage(mainCentralWidget);
-        qDebug() << "Tamaño del deConnectorWidget: ";
-    }
+    errorMsgMainwindow->showMessage("Pendiente codificar");
 }
 void mainWindow::previousPageAction(void)
 {
@@ -239,5 +225,100 @@ void mainWindow::nextpageAction(void)
     this->nextPage();
     qDebug() << "Se ha llamado a nextAction!";
 }
+void mainWindow::dbConnectionAction(void)
+{
+    auto *dbConnectorWidget = new dbConnectionForm(this);
+    bool repeat = true;
+    do
+    {
+        if(dbConnectorWidget->exec() == QDialog::Accepted)
+        {
+            if(this->createNewDbConnection() == EXIT_SUCCESS)
+            {
+                dbConnectorWidget->set_AlertVisible(false);
+                auto *mainCentralWidget = new class centralWidget(this);
+                this->newPage(mainCentralWidget);
+                repeat = false;
+            }
+            else
+            {
+                //Trabajamos en el objecto creado anteriormente pues por defecto
+                //el objeto NO se destruye al cerrarlo object.setAttribute(Qt::WA_DeleteOnClose)
+                //Pintar que ha habido un fallo en el formulario
+                dbConnectorWidget->set_AlertVisible(true);
+            }
+        }
+        else //QDialog::Canceled
+            repeat = false;
+    }while(repeat);
+}
+bool mainWindow::createNewDbConnection(void)
+{
+    try
+    {
+        //Checking installed db plugins
+        QStringList installedDrivers = QSqlDatabase::drivers(); //static function
+        if(!installedDrivers.contains(DbDetails["databaseType"]))
+            throw(QObject::tr("Driver necesario para conectar a la Db no instalado")); //EXIT_FAILURE
 
+        /* IMPORTANTE: No se puede utilizar el puntero "this" pues addDatabase() [static]
+            No se puede crear un objeto QSqlDatabase y luego añadirle la database (NO funciona)
+            La única manera es hacerlo tal como se indica aqui */
+
+        //Open connection to db
+        QString connectionName;
+        connectionName.append(DbDetails["databaseType"]);
+        connectionName.append("_").append(DbDetails["database"]);
+
+        mainDb = QSqlDatabase::addDatabase(DbDetails["databaseType"], connectionName);
+        mainDb.setDatabaseName(DbDetails["database"]);
+        mainDb.setUserName(DbDetails["username"]);
+        mainDb.setPassword(DbDetails["password"]);
+        mainDb.setHostName(DbDetails["serverUrl"]);
+        if(!mainDb.open())
+             throw(mainDb.lastError()); //EXIT_FAILURE
+        
+        qDebug() << QObject::tr("DB connection ") <<  mainDb.connectionName()
+                        << QObject::tr(" created.");
+        qDebug() << QObject::tr("DB ") <<  mainDb.databaseName()
+                        << QObject::tr(" opened successfully!");
+        return EXIT_SUCCESS;
+    }
+    catch (const QSqlError &e)
+    {
+        EXCEPTION_HANDLER
+        return EXIT_FAILURE;
+    }
+    catch (const QString &e)
+    {
+        EXCEPTION_HANDLER
+        return EXIT_FAILURE;
+    }
+}
+void mainWindow::closeDatabaseDialog(void) //SIN TERMINAR -NO VA AQUI !!
+{
+    //Pop-up to close db connection
+    QMessageBox msgBoxCloseDb;
+    msgBoxCloseDb.setWindowTitle(QObject::tr("Shut down db connection"));
+    msgBoxCloseDb.setText(QObject::tr("Confirma que quier cerrar la conexión con la database ?"));
+    msgBoxCloseDb.setWindowModality(Qt::NonModal);
+    msgBoxCloseDb.setStandardButtons(QMessageBox::Ok);
+    msgBoxCloseDb.setStandardButtons(QMessageBox::Cancel);
+    int boton = msgBoxCloseDb.exec();
+    switch (boton) {
+        case QMessageBox::Ok: //eliminar la conexion con la dabase actual
+        errorMsgMainwindow->showMessage(QObject::tr("Se ha cerrado la conexión con la Db"));
+        break;
+    case QMessageBox::Cancel:
+        break;
+    }
+}
+void mainWindow::importDbConnectionDetails(void)
+{
+    DbDetails = static_cast<dbConnectionForm*>(QObject::sender())->get_DbConnectionDetails();
+}
+QSqlDatabase mainWindow::get_mainDb() const
+{
+    return mainDb;
+}
 /* PUBLIC MEMBERS */

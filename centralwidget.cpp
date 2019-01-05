@@ -1,12 +1,13 @@
 #include "centralwidget.h"
 #include "mainwindow.h"
-#include "dbconnector.h"
+#include "excepciones.h"
 #include "dbconnectionform.h"
 #include "globals.h"
 
 /* CONSTRUCTOR */
 centralWidget::centralWidget(QWidget *parent) : QWidget(parent)
 {
+    db = static_cast<mainWindow*>(this->parent())->get_mainDb();
     errorMsgCentralwidget = new QErrorMessage(this);
     this->setUpLayout();
     this->setUpTreeWidget();
@@ -108,7 +109,7 @@ void centralWidget::setUpContextMenus(void)
 void centralWidget::executeSqlQuery(void)
 {
     sqlModel = new QSqlQueryModel(model);
-    sqlModel->setQuery(textField->toPlainText(), *db); //Importante, indicar la DB !!
+    sqlModel->setQuery(textField->toPlainText(), db); //Importante, indicar la DB !!
     if (sqlModel->lastError().isValid())
     {
         errorMsgCentralwidget->showMessage(sqlModel->lastError().databaseText());
@@ -136,37 +137,26 @@ void centralWidget::setUpTreeWidget(void)
 {
     tree->clear(); //Importante, no olvidar !!
 
-    //Recuperar las conexiones de DB activas
-    QStringList dbConnectionNames = QSqlDatabase::connectionNames(); //Static
-
     //Primer nivel (conexiones)
-    for(auto i=0; i< dbConnectionNames.length(); i++)
+    QString tmpUser = db.userName();
+    QString tmpName = db.databaseName();
+
+    qDebug() << "Tablas de la DB: " << db.tables();
+
+    auto *root = new QTreeWidgetItem(tree);
+    root->setText(0, tmpUser.append('@').append(tmpName));
+
+    //Segundo nivel (tablas para la conexión seleccionada)
+    foreach(QString str, db.tables())
     {
-        QString tmpUser = QSqlDatabase::database(dbConnectionNames[i]).userName();
-        QString tmpName = QSqlDatabase::database(dbConnectionNames[i]).databaseName();
-        QSqlDatabase tmpDB =  QSqlDatabase::database(dbConnectionNames[i]);
-        QStringList tmpTables = tmpDB.tables();
-
-        qDebug() << "Tablas de la DB: " << tmpTables;
-
-        auto *root = new QTreeWidgetItem(tree);
-        root->setText(0, tmpUser.append('@').append(tmpName));
-
-        //Copy-constructor db to use it in the setUpTableWidget()
-         db = new QSqlDatabase (tmpDB);
-
-        //Segundo nivel (tablas para la conexión seleccionada)
-        foreach(QString str, tmpTables)
-        {
-            auto *child = new QTreeWidgetItem(root);
-            child->setText(0, str);
-        }
+        auto *child = new QTreeWidgetItem(root);
+        child->setText(0, str);
     }
 }
 void centralWidget::setUpTableWidget(void)
-{
+{   
     //Construct SQL model
-    model = new QSqlRelationalTableModel(this, *db);
+    model = new QSqlRelationalTableModel(this, db);
     model->setEditStrategy(QSqlRelationalTableModel::OnRowChange);
     table->setModel(model);
     table->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::CurrentChanged);
@@ -246,7 +236,7 @@ void centralWidget::on_cancelar_clicked()
 void centralWidget::add_tableRow(void)
 {
     //Comprobación inicial
-    QSqlTableModel *modelo = qobject_cast<QSqlTableModel *>(table->model());
+    auto *modelo = qobject_cast<QSqlTableModel *>(table->model());
     if (!modelo)
         return;
 

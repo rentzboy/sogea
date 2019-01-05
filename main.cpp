@@ -6,9 +6,6 @@
 #include <typeinfo>
 #include  <exception>
 
-//Static variables initialization
-std::size_t dbConnectionForm::connectionId=0;
-
 int main(int argc, char *argv[])
 {  
     try

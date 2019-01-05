@@ -8,3 +8,298 @@ Line: 47
 Error Description: Driver not loaded
 
 
+Time: mar. ene. 1 19:52:59 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 278
+Error Description: Access denied for user 'postgres'@'localhost' (using password: YES)
+
+
+Time: mar. ene. 1 20:08:06 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 278
+Error Description: FATAL:  database "Sogeaa" does not exist
+
+
+
+Time: mar. ene. 1 20:08:15 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 278
+Error Description: FATAL:  database "Sogeaaa" does not exist
+
+
+
+Time: mar. ene. 1 20:08:30 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 278
+Error Description: Access denied for user 'postgres'@'localhost' (using password: YES)
+
+
+Time: mar. ene. 1 20:17:23 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 277
+Error Description: FATAL:  database "Sogeaaa" does not exist
+
+
+
+Time: mar. ene. 1 20:19:18 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 277
+Error Description: FATAL:  password authentication failed for user "postgresss"
+
+
+
+Time: mar. ene. 1 20:19:48 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 277
+Error Description: FATAL:  password authentication failed for user "postgresss"
+
+
+
+Time: mar. ene. 1 20:38:01 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 289
+Error Description: FATAL:  database "Sogeaaa" does not exist
+
+
+
+Time: mar. ene. 1 20:39:37 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 289
+Error Description: FATAL:  password authentication failed for user "postgres55"
+
+
+
+Time: mar. ene. 1 20:41:43 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 289
+Error Description: FATAL:  password authentication failed for user "postgresaa"
+
+
+
+Time: mar. ene. 1 20:42:28 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 289
+Error Description: FATAL:  password authentication failed for user "postgresaa"
+
+
+
+Time: mar. ene. 1 20:44:41 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 289
+Error Description: FATAL:  database "Sogeaaa" does not exist
+
+
+
+Time: mar. ene. 1 20:49:12 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 289
+Error Description: FATAL:  database "Sogeaqq" does not exist
+
+
+
+Time: mar. ene. 1 20:50:40 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 289
+Error Description: FATAL:  database "Sogeaa" does not exist
+
+
+
+Time: mar. ene. 1 20:54:51 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 290
+Error Description: FATAL:  database "Sogeaaa" does not exist
+
+
+
+Time: mar. ene. 1 20:58:07 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 290
+Error Description: FATAL:  database "Sogeaa" does not exist
+
+
+
+Time: mar. ene. 1 20:58:37 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 290
+Error Description: FATAL:  password authentication failed for user "postgres"
+
+
+
+Time: mar. ene. 1 21:02:10 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 290
+Error Description: FATAL:  database "Sogeaaa" does not exist
+
+
+
+Time: mar. ene. 1 21:03:20 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 290
+Error Description: FATAL:  password authentication failed for user "postgres"
+
+
+
+Time: mar. ene. 1 21:40:33 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 290
+Error Description: FATAL:  password authentication failed for user "postgresa"
+
+
+
+Time: mar. ene. 1 21:40:48 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 290
+Error Description: FATAL:  password authentication failed for user "postgresa"
+
+
+
+Time: mar. ene. 1 21:40:51 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 290
+Error Description: FATAL:  password authentication failed for user "postgresa"
+
+
+
+Time: mar. ene. 1 21:40:54 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 290
+Error Description: FATAL:  password authentication failed for user "postgresa"
+
+
+
+Time: mar. ene. 1 21:46:59 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 295
+Error Description: FATAL:  password authentication failed for user "postgresaa"
+
+
+
+Time: mar. ene. 1 23:27:56 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 295
+Error Description: FATAL:  password authentication failed for user "postgres"
+
+
+
+Time: mar. ene. 1 23:48:16 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 295
+Error Description: FATAL:  password authentication failed for user "postgres"
+
+
+
+Time: mié. ene. 2 11:31:52 2019
+System Operative: 16.04
+Hostname: renti-ThinkPad-X300
+User: 99
+File: ../../../Qt/Proyectos/sogea/Sogea/mainwindow.cpp
+Function name: createNewDbConnection
+Line: 295
+Error Description: FATAL:  password authentication failed for user "postgresss"
+
+
+

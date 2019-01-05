@@ -31,14 +31,12 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     dbconnectionform.cpp \
-    dbconnector.cpp \
     centralwidget.cpp \
     excepciones.cpp
 
 HEADERS += \
     mainwindow.h \
     dbconnectionform.h \
-    dbconnector.h \
     centralwidget.h \
     excepciones.h \
     globals.h \
