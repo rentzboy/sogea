@@ -5,7 +5,7 @@
 #include <QApplication>
 #include <typeinfo>
 #include  <exception>
-//xxxx
+
 int main(int argc, char *argv[])
 {  
     try
