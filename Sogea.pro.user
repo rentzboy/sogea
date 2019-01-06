@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.8.0, 2019-01-04T20:44:21. -->
+<!-- Written by QtCreator 4.8.0, 2019-01-06T03:10:58. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -60,10 +60,10 @@
    <value type="QString" key="ClangCodeModel.WarningConfigId">Builtin.EverythingWithExceptions</value>
    <value type="bool" key="ClangTools.BuildBeforeAnalysis">false</value>
    <value type="QString" key="ClangTools.DiagnosticConfig">Builtin.TidyAndClazy</value>
-   <valuelist type="QVariantList" key="ClangTools.SelectedDirs"/>
-   <valuelist type="QVariantList" key="ClangTools.SelectedFiles">
-    <value type="QString">/home/renti/Qt/Proyectos/sogea/Sogea/centralwidget.cpp</value>
+   <valuelist type="QVariantList" key="ClangTools.SelectedDirs">
+    <value type="QString">/home/renti/Qt/Proyectos/sogea/Sogea/Sogea.pro</value>
    </valuelist>
+   <valuelist type="QVariantList" key="ClangTools.SelectedFiles"/>
    <valuelist type="QVariantList" key="ClangTools.SuppressedDiagnostics">
     <valuemap type="QVariantMap">
      <value type="QString" key="ClangTools.SuppressedDiagnosticContext"></value>
