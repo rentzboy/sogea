@@ -2,6 +2,7 @@
 #include "globals.h"
 #include "mainwindow.h"
 #include <memory>
+#include <QSettings>
 
 /* CONSTRUCTOR */
 dbConnectionForm::dbConnectionForm(QWidget *parent, Qt::WindowFlags flag) : QDialog(parent, flag)
@@ -20,10 +21,11 @@ dbConnectionForm::dbConnectionForm(QWidget *parent, Qt::WindowFlags flag) : QDia
     comboList.append("QSQLlite");
     typeComboBox = new QComboBox(this);
     typeComboBox->addItems(comboList);
-    databaseLineEdit = new QLineEdit(QObject::tr("Sogea"), this);
-    usernameLineEdit = new QLineEdit(QObject::tr("postgres"),this);
+    databaseLineEdit = new QLineEdit(QObject::tr(DATABASE_NAME), this);
+    usernameLineEdit = new QLineEdit(this->readUsernameSettings(),this);
     passwordLineEdit = new QLineEdit(QObject::tr("torranz"),this);
-    serverLineEdit = new QLineEdit(QObject::tr("localhost"),this);
+    passwordLineEdit->setEchoMode(QLineEdit::Password);
+    serverLineEdit = new QLineEdit(QObject::tr(DATABASE_SERVER_URL),this);
     aceptarButton = new QPushButton(QObject::tr("Aceptar"), this);
     cancelarButton = new QPushButton(QObject::tr("Cancelar"), this);
     alertMessage = new QLabel(QObject::tr("Error: Revise los datos"), this);
@@ -93,6 +95,16 @@ void dbConnectionForm::set_DbConnectionDetails()
     DbConnectionDetails["username"] = this->get_UsernameFieldText();
     DbConnectionDetails["password"] = this->get_PasswordFieldText();
     DbConnectionDetails["serverUrl"] = this->get_ServerFieldText();
+}
+QString dbConnectionForm::readUsernameSettings(void)
+{
+    //Retrieve configuration from the last user's session
+    QSettings userSettings (QObject::tr("Fx Team®"), QObject::tr("Sogea"), this);
+    userSettings.beginGroup(QObject::tr("mainwindow"));
+    userSettings.value(QObject::tr("username"));
+    QString tmp = userSettings.value(QObject::tr("username")).toString();
+    userSettings.endGroup();
+    return tmp;
 }
 
 /* PUBLIC MEMBERS */

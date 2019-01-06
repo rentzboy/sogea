@@ -133,10 +133,10 @@ QSettings::Status mainWindow::readUserSettings(void)
 {
     //Retrieve configuration from the last user's session
     QSettings userSettings(QObject::tr("Fx Team®"), QObject::tr("Sogea"));
-    userSettings.beginGroup("mainwindow");
-    this->resize(userSettings.value("size").toSize());
-    this->move(userSettings.value("position").toPoint());
-    userSettings.value("fullScreen");
+    userSettings.beginGroup(QObject::tr("mainwindow"));
+    this->resize(userSettings.value(QObject::tr("size")).toSize());
+    this->move(userSettings.value(QObject::tr("position")).toPoint());
+    userSettings.value(QObject::tr("fullScreen"));
     userSettings.endGroup();
     return userSettings.status();
 }
@@ -145,15 +145,19 @@ QSettings::Status mainWindow::writeUserSettings(void)
     //Store configuration before closing the application
     QSettings userSettings(QObject::tr("Fx Team®"), QObject::tr("Sogea"));
     userSettings.beginGroup("mainwindow");
-    userSettings.setValue("size", this->size()); //QSize
-    userSettings.setValue("position", this->pos()); //QPoint
-    userSettings.setValue("fullScreen", this->isFullScreen()); //bool
+    userSettings.setValue(QObject::tr("size"), this->size()); //QSize
+    userSettings.setValue(QObject::tr("position"), this->pos()); //QPoint
+    userSettings.setValue(QObject::tr("fullScreen"), this->isFullScreen()); //bool
+    userSettings.setValue(QObject::tr("username"), DbDetails["username"]);
     userSettings.endGroup();
     return userSettings.status();
 }
 void mainWindow::closeEvent(QCloseEvent *event) //ACTIVAR CODE EN PRODUCCIÓN
 {
     event->accept();
+
+    this->writeUserSettings(); //QUITAR EN PRODUCCIÓN Y ACTIVAR EL CODIGO INFERIOR
+
 
     //COMENTAMOS EL RESTO PARA TEMAS DE DESARROLLO, PERO ESTA BIEN
     //PARA PRODUCCIÓN HABRIA QUE ACTIVARLO !!
@@ -204,8 +208,15 @@ void mainWindow:: nextPage(void) //NO PROBADO
 /* PUBLIC SLOT MEMBERS */
 void mainWindow::openAction(void) const//PENDING
 {
-    errorMsgMainwindow->showMessage("Pendiente codificar");
-
+    try
+    {
+        errorMsgMainwindow->showMessage("Lanza una exception de prueba");
+        throw(QObject::tr("Forzamos una exception"));
+    }
+    catch (QString &e)
+    {
+        EXCEPTION_HANDLER
+    }
 }
 void mainWindow::closeAction(void)
 {

@@ -2,6 +2,7 @@
 #include "globals.h"
 #include <QSqlError>
 #include <QErrorMessage>
+#include <QSqlDatabase>
 #include <fstream>   //istream
 #include <sstream>   //ostringstream
 
@@ -14,8 +15,8 @@ excepciones::excepciones(const std::exception &e, const QString& _fileName, //st
                                                     fileName(_fileName),
                                                     functionName(_functionName),
                                                     errorDescription(e.what()),
-                                                    fileLine(_lineNumber),
-                                                    userName(99)
+                                                    userName(databaseUsername()),
+                                                    fileLine(_lineNumber)
 {
     qDebug() << "Se ha llamado al constructor de excepciones";
     this->saveExceptionInterface();
@@ -37,8 +38,8 @@ excepciones::excepciones(const QSqlError &e, const QString& _fileName, //QSqlErr
                                                    fileName(_fileName),
                                                    functionName(_functionName),
                                                    errorDescription(e.databaseText()),
-                                                   fileLine(_lineNumber),
-                                                   userName(99)
+                                                   userName(databaseUsername()),
+                                                   fileLine(_lineNumber)
 {
     qDebug() << "Se ha llamado al constructor de excepciones";
     saveExceptionInterface();
@@ -60,8 +61,8 @@ excepciones::excepciones(const QString& errorMsg, const QString& _fileName, //QS
                                                    fileName(_fileName),
                                                    functionName(_functionName),
                                                    errorDescription(errorMsg),
-                                                   fileLine(_lineNumber),
-                                                   userName(99)
+                                                   userName(databaseUsername()),
+                                                   fileLine(_lineNumber)
 {
     qDebug() << "Se ha llamado al constructor de excepciones";
     this->saveExceptionInterface();
@@ -77,6 +78,11 @@ excepciones::excepciones(const QString& errorMsg, const QString& _fileName, //QS
 }
 
 /* PRIVATE MEMBERS */
+QString excepciones::databaseUsername(void)
+{
+    QSqlDatabase tmp = QSqlDatabase::database(QObject::tr(DATABASE_QPSQL_NAME)); //returns default db
+    return tmp.userName();
+}
 void excepciones::saveExceptionInterface(void)
 {
     /* Al generarse una exception se intenta guardar en la Db, pero si se genera
@@ -118,7 +124,7 @@ void excepciones::saveToLogFile(QString method)
         logExceptions << QObject::tr("Time: ") << systemTime.toString() << "\n"
                                  << QObject::tr("System Operative: ") << operativeSystem << "\n"
                                 << QObject::tr("Hostname: ") << hostName << "\n"
-                                 << QObject::tr("User: ") << QString::number(userName) << "\n"
+                                 << QObject::tr("User: ") << userName << "\n"
                                  << QObject::tr("File: ") << fileName << "\n"
                                  << QObject::tr("Function name: ") << functionName << "\n"
                                  << QObject::tr("Line: ") << QString::number(fileLine) << "\n"
@@ -136,7 +142,7 @@ void excepciones::saveToLogFile(QString method)
             outputFile << QObject::tr("Time: ").toStdString() << systemTime.toString().toStdString() << "\n"
                        << QObject::tr("System Operative: ").toStdString() << operativeSystem.toStdString() << "\n"
                       << QObject::tr("Hostname: ").toStdString() << hostName.toStdString() << "\n"
-                       << QObject::tr("User: ").toStdString() << QString::number(userName).toStdString() << "\n"
+                       << QObject::tr("User: ").toStdString() << userName.toStdString() << "\n"
                        << QObject::tr("File: ").toStdString() << fileName.toStdString() << "\n"
                        << QObject::tr("Function name: ").toStdString() << functionName.toStdString() << "\n"
                        << QObject::tr("Line: ").toStdString() << QString::number(fileLine).toStdString() << "\n"

@@ -35,6 +35,7 @@ private:
     QSize sizeHint() const override;
     bool FieldsAreEmpty(void);
     void set_DbConnectionDetails(void);
+    QString readUsernameSettings(void);
     //attributes
     QFormLayout *formLayout = Q_NULLPTR;
     QPushButton *aceptarButton = Q_NULLPTR;

@@ -22,6 +22,7 @@ public:
 
 private:
     //members
+    QString databaseUsername(void);
     void saveExceptionInterface(void);
     bool saveToLogTable(void);
     void saveToLogFile(QString method); //Using Qt or STL
@@ -33,8 +34,8 @@ private:
     QString fileName = Q_NULLPTR;
     QString functionName = Q_NULLPTR;
     QString errorDescription = Q_NULLPTR;
+    QString userName ;
     int fileLine;
-    int userName ;
 };
 
 #endif // EXCEPCIONES_H
