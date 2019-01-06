@@ -11,7 +11,9 @@
 #define DATABASE_TYPE                       "QPSQL"
 #define DATABASE_NAME                      "Sogea"
 #define DATABASE_QPSQL_NAME       "QPSQL_Sogea"
+#define DATABASE_PASSWORD           "torranz55"
 #define DATABASE_SERVER_URL        "localhost"
+#define LOG_FILE_PATH                         "/home/renti/Qt/Proyectos/sogea/Sogea/Logs/exceptions.txt"
 #define EXCEPTION_HANDLER                             excepciones ex(e, __FILE__, __FUNCTION__,  __LINE__);
 /*Deprecated
 #define CATCH_STD_EXCEPTION        excepciones catchedException (e, __FILE__, __FUNCTION__,  __LINE__); \

@@ -23,7 +23,7 @@ dbConnectionForm::dbConnectionForm(QWidget *parent, Qt::WindowFlags flag) : QDia
     typeComboBox->addItems(comboList);
     databaseLineEdit = new QLineEdit(QObject::tr(DATABASE_NAME), this);
     usernameLineEdit = new QLineEdit(this->readUsernameSettings(),this);
-    passwordLineEdit = new QLineEdit(QObject::tr("torranz"),this);
+    passwordLineEdit = new QLineEdit(QObject::tr(DATABASE_PASSWORD),this);
     passwordLineEdit->setEchoMode(QLineEdit::Password);
     serverLineEdit = new QLineEdit(QObject::tr(DATABASE_SERVER_URL),this);
     aceptarButton = new QPushButton(QObject::tr("Aceptar"), this);

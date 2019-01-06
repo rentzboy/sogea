@@ -121,22 +121,13 @@ void excepciones::saveToLogFile(QString method)
     try
     {
         qDebug() << "Se ha llamado a saveToLogFile()";
-        logExceptions << QObject::tr("Time: ") << systemTime.toString() << "\n"
-                                 << QObject::tr("System Operative: ") << operativeSystem << "\n"
-                                << QObject::tr("Hostname: ") << hostName << "\n"
-                                 << QObject::tr("User: ") << userName << "\n"
-                                 << QObject::tr("File: ") << fileName << "\n"
-                                 << QObject::tr("Function name: ") << functionName << "\n"
-                                 << QObject::tr("Line: ") << QString::number(fileLine) << "\n"
-                                 << QObject::tr("Error Description: ") << errorDescription << "\n\n\n";
 
         if(method == "STL") //OPCION #1: STL
         {
-            std::string fileUrl ("/home/renti/Qt/Proyectos/sogea/Sogea/Logs/exceptions.txt");
+            std::string fileUrl (LOG_FILE_PATH);
             std::ofstream outputFile(fileUrl, std::ios_base::out | std::ios_base::app);
             outputFile.exceptions(std::ios_base::badbit | std::ios_base::failbit); //Activar las excepciones
-            if(!outputFile.is_open())
-                throw(QObject::tr("No se ha podido abrir (STL) el archivo de excepcionts.txt !"));
+            outputFile.is_open(); //si no se puede abrir salta la exception directamente
                 
             qDebug() << "Volcando excepción al archivo.....";
             outputFile << QObject::tr("Time: ").toStdString() << systemTime.toString().toStdString() << "\n"
@@ -151,21 +142,28 @@ void excepciones::saveToLogFile(QString method)
         }
         else //OPCION #2: Qt
         {
-            QFile logFile("/home/renti/Qt/Proyectos/sogea/Sogea/Logs/exceptions.txt");
+            QFile logFile(LOG_FILE_PATH);
              if (!logFile.open(QFile::WriteOnly | QFile::Append))
                  throw(QObject::tr("No se ha podido abrir (Qt) el archivo de excepcionts.txt !"));
-             
-             
-                 qDebug() << "Volcando excepción al archivo.....";
-                 QTextStream out(&logFile);
-                 QString iterator;
-                 foreach(iterator, logExceptions)
-                     out << iterator;
-                 if(out.status() !=QTextStream::Ok)
-                     throw(QObject::tr("Eror al grabar (Qt) el archivo de excepcionts.txt !"));
 
-                 qDebug() << (QObject::tr("Se ha grabado (Qt) un error al archivo de texto"));
+             logExceptions << QObject::tr("Time: ") << systemTime.toString() << "\n"
+                                      << QObject::tr("System Operative: ") << operativeSystem << "\n"
+                                     << QObject::tr("Hostname: ") << hostName << "\n"
+                                      << QObject::tr("User: ") << userName << "\n"
+                                      << QObject::tr("File: ") << fileName << "\n"
+                                      << QObject::tr("Function name: ") << functionName << "\n"
+                                      << QObject::tr("Line: ") << QString::number(fileLine) << "\n"
+                                      << QObject::tr("Error Description: ") << errorDescription << "\n\n\n";
              
+             qDebug() << "Volcando excepción al archivo.....";
+             QTextStream out(&logFile);
+             QString iterator;
+             foreach(iterator, logExceptions)
+                 out << iterator;
+             if(out.status() !=QTextStream::Ok)
+                 throw(QObject::tr("Eror al grabar (Qt) el archivo de excepcionts.txt !"));
+
+             qDebug() << (QObject::tr("Se ha grabado (Qt) un error al archivo de texto"));
         }
     }catch(const std::ios_base::failure &e)
     {
