@@ -1,0 +1,37 @@
+
+Imperative rules
+================
+General
+-------
+Uso de try/catch para asignar memoria dinámica, acceso DB
+Añadir const a los parámetros de funciones pasados por referencia (cuando se pueda)
+Eliminar member variables no utilizadas, pero como ?
+Comprobar que los throw se lanzan todos con QObject::tr("....."). Si se omite CRASH pues el catch no recoge un cons char* --> crear un script con Perl
+
+Clases
+------
+Cada clase únicamente debe cumplir una única tarea
+Añadir const a las member functions que no modifique en objeto (i.e. getters)
+Añadir los .h en los .cpp. En los .h utilizar forward declarations (class abc;)
+Declarar las const y enum dentro de las clases, para evitar #defines y globals
+
+Memoria
+-------
+Uso de un parent(Qt destructor), smart pointer o STL container al utilizar new
+Uso de Cppcheck y Valgrind
+
+
+
+Good practices
+==============
+Utilizar Q_ASSERT y Q_ASSERT_X durante el desarrollo
+Devolver Error_Status(bool) en el return de las funciones
+
+
+Testing
+=======
+Cppcheck (qpt)
+Valgrind
+Tidy-Clang
+Google Tests / CppUTest / CppUnit
+
