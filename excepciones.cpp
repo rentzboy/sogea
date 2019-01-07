@@ -3,6 +3,7 @@
 #include <QSqlError>
 #include <QErrorMessage>
 #include <QSqlDatabase>
+#include <QSqlQuery>
 #include <fstream>   //istream
 #include <sstream>   //ostringstream
 
@@ -80,9 +81,10 @@ excepciones::excepciones(const QString& errorMsg, const QString& _fileName, //QS
 /* PRIVATE MEMBERS */
 QString excepciones::databaseUsername(void)
 {
-    QSqlDatabase tmp = QSqlDatabase::database(QObject::tr(DATABASE_QPSQL_NAME)); //returns default db
+    QSqlDatabase tmp = QSqlDatabase::database(QObject::tr(DATABASE_QPSQL_NAME));
     return tmp.userName();
 }
+
 void excepciones::saveExceptionInterface(void)
 {
     /* Al generarse una exception se intenta guardar en la Db, pero si se genera
@@ -93,21 +95,48 @@ void excepciones::saveExceptionInterface(void)
      * la exception en saveToLogFile() ya doy por hecho que ha fallado saveToLogTable() */
     /* Podria eliminar saveExceptionInterface() y llamar a las 2 funciones directamente
      * desde los constructors, pero resulta más fácil hacer los cambios asi */
-    if(this->saveToLogTable() == EXIT_SUCCESS)
+
+#ifdef PRODUCTION
+    if(this->saveToLogTable() == EXIT_FAILURE)
         this->saveToLogFile("STL");
+#elif DEBUG
+    this->saveToLogTable();
+    this->saveToLogFile("STL");
+#endif
 }
+
 bool excepciones::saveToLogTable(void)
 {
     try
     {
-        qDebug() << "Se ha llamado a saveToLogTable() => PENDIENTE CODIFICAR";
-        //OJO: Despues de codificar esta parte en el interface cambiar
-        //this->saveToLogTable() == EXIT_SUCCESS) ==> this->saveToLogTable() == EXIT_FAILURE)
+        qDebug() << "Se ha llamado a saveToLogTable()";
+
+        auto tmp = QSqlDatabase::database(QObject::tr(DATABASE_QPSQL_NAME));
+        if(tmp.isOpen())
+        {
+            QSqlQuery query(tmp);
+            query.prepare("INSERT INTO almacen.exceptions (username, hostname, operativesystem, "
+                                   "file, function, line, errortime, description)"
+            "VALUES (:username, :hostname, :operativesystem, :file, :function, :line, :errortime, :description)");
+            query.bindValue(":username", this->userName);
+            query.bindValue(":hostname", this->hostName);
+            query.bindValue(":operativesystem", this->operativeSystem );
+            query.bindValue(":file", this->fileName);
+            query.bindValue(":function", this->functionName);
+            query.bindValue(":line", this->fileLine);
+            query.bindValue(":errortime", this->systemTime);
+            query.bindValue(":description", this->errorDescription);
+            if(!query.exec())
+                throw(query.lastError());
+        }
+        else
+            qDebug() << "No se ha podido habrir la Database";
 
         return EXIT_SUCCESS;
     }catch(const QSqlError &e)
     {
-        qCritical() << "Error en el constructor de excepciones al guardar en la DB: " << e.databaseText();
+        //Recuperar el error con text (genérico) pues hay 3 error types: query, database y driver
+        qCritical() << "Error en el constructor de excepciones al guardar en la DB: " << e.text();
         return EXIT_FAILURE; //no exit() !!
 
     }catch (QString &e)

@@ -152,35 +152,33 @@ QSettings::Status mainWindow::writeUserSettings(void)
     userSettings.endGroup();
     return userSettings.status();
 }
-void mainWindow::closeEvent(QCloseEvent *event) //ACTIVAR CODE EN PRODUCCIÓN
+void mainWindow::closeEvent(QCloseEvent *event)
 {
+#ifdef DEBUG
     event->accept();
-
-    this->writeUserSettings(); //QUITAR EN PRODUCCIÓN Y ACTIVAR EL CODIGO INFERIOR
-
-
-    //COMENTAMOS EL RESTO PARA TEMAS DE DESARROLLO, PERO ESTA BIEN
-    //PARA PRODUCCIÓN HABRIA QUE ACTIVARLO !!
-//    QMessageBox msgBox;
-//     msgBox.setText("The document has been modified.");
-//     msgBox.setInformativeText("Do you want to save your changes?");
-//     msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-//     msgBox.setDefaultButton(QMessageBox::Save);
-//     int ret = msgBox.exec();
-
-//     switch (ret) {
-//         case QMessageBox::Save:
-//             this->saveAction();
-//             this->writeUserSettings();
-//             event->accept();
-//             break;
-//         case QMessageBox::Discard:
-//             event->accept();
-//             this->writeUserSettings();
-//             break;
-//         case QMessageBox::Cancel:
-//            event->ignore();
-//     }
+    this->writeUserSettings();
+#elif PRODUCTION
+    event->accept();
+    QMessageBox msgBox;
+     msgBox.setText("The document has been modified.");
+     msgBox.setInformativeText("Do you want to save your changes?");
+     msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+     msgBox.setDefaultButton(QMessageBox::Save);
+     int ret = msgBox.exec();
+     switch (ret) {
+         case QMessageBox::Save:
+             this->saveAction();
+             this->writeUserSettings();
+             event->accept();
+             break;
+         case QMessageBox::Discard:
+             event->accept();
+             this->writeUserSettings();
+             break;
+         case QMessageBox::Cancel:
+            event->ignore();
+     }
+#endif
 }
 void mainWindow:: newPage(QWidget *widget) //NO PROBADO
 {
